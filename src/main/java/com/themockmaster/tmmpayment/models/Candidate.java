@@ -1,4 +1,6 @@
-package com.themockmaster.tmmpayment.mockmodels;
+package com.themockmaster.tmmpayment.models;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,18 +9,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+
 @Entity
 @Table(name = "candidates")
-public class Candidate {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "candidate_id")
-	private Integer candidate_id;
+public class Candidate  implements Serializable{
 	
 	
-	@Column(name = "email")
-	private String email;
+	public Candidate() {}
 	
 	@Override
 	public String toString() {
@@ -27,21 +29,6 @@ public class Candidate {
 				+ ", date_created=" + date_created + ", date_updated=" + date_updated + "]";
 	}
 
-	@Column(name = "phone_number")
-	private String phone_number;
-	
-	@Column(name = "password")
-	private String password;
-	
-	@Column(name = "profession")
-	private String profession;
-	
-	@Column(name = "token")
-	private String token;
-	
-	@Column(name = "role")
-	private String role;
-	
 	public Integer getCandidate_id() {
 		return candidate_id;
 	}
@@ -114,13 +101,38 @@ public class Candidate {
 		this.date_updated = date_updated;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "candidate_id")
+	private Integer candidate_id;
+	
+	
+	@Column(name = "email")
+	private String email;
+	
+	@Column(name = "phone_number")
+	private String phone_number;
+	
+	@Transient
+	@Column(name = "password")
+	private  String password;
+	
+	@Column(name = "profession")
+	private String profession;
+	
+	@Column(name = "token")
+	private String token;
+	
+	@Column(name = "role")
+	private String role;
+	
+	@JsonIgnore
 	@Column(name = "date_created")
 	private String date_created;
 	
+	@JsonIgnore
 	@Column(name = "date_updated")
 	private String date_updated;
-	
-	
 	
 	
 

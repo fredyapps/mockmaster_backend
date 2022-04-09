@@ -1,4 +1,4 @@
-package com.themockmaster.tmmpayment.MockService;
+package com.themockmaster.tmmpayment.mockservice;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.themockmaster.tmmpayment.MockService;
+package com.themockmaster.tmmpayment.mockservice;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -225,6 +225,7 @@ public class MockServiceImpl implements MockService {
 	public Mock storeExamResults(HashMap<String,Double> firstScoreMap, HashMap<String,Double> secondScoreMap ,Double overAllScore,String exam_token) {
 		
 		Date date = new Date();
+		Boolean failed = false;
 		
 	 
 		Mock mockObj = mockRepo.getByToken(exam_token);
@@ -259,11 +260,20 @@ public class MockServiceImpl implements MockService {
 	    	exam_result.setExam_token(exam_token);
 	  	    exam_result.setExam_id(savedMock.getMockId());
 	  	    exam_result.setDomain_id(me);
+	  	
 	  	    int fscore = (int) Math.round(firstScoreMap.get(me));
 	  	    int sscore = (int) Math.round(secondScoreMap.get(me));
+	  	    if(fscore < 450) { failed = true;}
 	  	    exam_result.setFirst_score(String.valueOf(fscore));
 	  	    exam_result.setSecond_score(String.valueOf(sscore));
 	  	    resultRepo.save(exam_result);
+	    	
+	    }
+	    
+	    if(failed) {
+	    	 savedMock = mockRepo.getByToken(exam_token);
+	    	 savedMock.setStatus("Failed");
+	    	 mockRepo.save(savedMock);
 	    	
 	    }
 	    

@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.themockmaster.tmmpayment.MockService.MockService;
 import com.themockmaster.tmmpayment.mockmodels.ErrorModel;
 import com.themockmaster.tmmpayment.mockmodels.Mock;
 import com.themockmaster.tmmpayment.mockmodels.Question;
+import com.themockmaster.tmmpayment.mockservice.MockService;
 import com.themockmaster.tmmpayment.repository.OptionRepository;
 import com.themockmaster.tmmpayment.repository.QuestionRepository;
 import com.themockmaster.tmmpayment.utils.Controls;
