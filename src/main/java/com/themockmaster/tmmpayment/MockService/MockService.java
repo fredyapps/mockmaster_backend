@@ -8,7 +8,7 @@ import com.themockmaster.tmmpayment.mockmodels.Question;
 public interface MockService {
 	
 	
-	public <T> T createCISAMockExam() throws Exception;
+	public <T> T createCISAMockExam(String user_token) throws Exception;
 	
 	
 	public Mock generateCISAMockResult(List<Question> submittion,String exam_token) throws Exception;

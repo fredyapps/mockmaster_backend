@@ -1,6 +1,7 @@
 package com.themockmaster.tmmpayment.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -46,14 +47,15 @@ public class MockController {
 	
 	/** Initiating a Mock exam by Generating a set of random question from the 5 differents cisa domains  **/
 	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
+	//@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/cisaQuestions",method = RequestMethod.GET)
-	public ResponseEntity<?> initiateFlatterwavePayRequest() {
+	public ResponseEntity<?> initiateFlatterwavePayRequest(@RequestHeader("user_token") String user_token) {
 		
-		 List<Question> questions = new ArrayList<Question>();
+		 HashMap<String,Object> questions_and_mock = new HashMap();
 		
 		try {
 			
-			questions = mockservice.createCISAMockExam();
+			questions_and_mock = mockservice.createCISAMockExam(user_token);
 		     
 			
 		}catch(Exception ex){
@@ -61,7 +63,7 @@ public class MockController {
 			System.out.println(ex);
 		}		
 		
-		return new ResponseEntity<Object>(questions, HttpStatus.OK);
+		return new ResponseEntity<Object>(questions_and_mock, HttpStatus.OK);
 		
 	}
 	
@@ -70,6 +72,7 @@ public class MockController {
 	
 	/** Takes the candidate's answers as a parameter and generate the result based on the result formulas **/
 	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
+	//@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/cisaResults",method = RequestMethod.POST)
 	public ResponseEntity<?> generateCISAcandiateResults(@RequestBody List<Question> submittion,
 			@RequestHeader("exam_token") String exam_token,

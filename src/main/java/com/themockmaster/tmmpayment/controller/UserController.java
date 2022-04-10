@@ -28,6 +28,7 @@ public class UserController {
 
 	
 	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
+	//@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
 	public  ResponseEntity<?> register(@RequestBody Candidate candidate){
 		
@@ -59,6 +60,7 @@ public class UserController {
 	
 
 	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
+	//@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/login",method = RequestMethod.POST)
 	public  ResponseEntity<?> login(@RequestBody HashMap<String,String> credentials){
 		
@@ -82,7 +84,11 @@ public class UserController {
 		
 		}catch(Exception ex) {
 			
-		       return new ResponseEntity<Object>(ex, HttpStatus.UNPROCESSABLE_ENTITY);
+			   ErrorModel err = new ErrorModel();
+			   err.setMessage("Sorry,user does not exist");
+			   err.setStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+			
+		       return new ResponseEntity<Object>(err, HttpStatus.UNPROCESSABLE_ENTITY);
 		 
 		}
 		

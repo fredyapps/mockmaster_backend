@@ -13,10 +13,15 @@ import org.springframework.stereotype.Service;
 import com.themockmaster.tmmpayment.mockmodels.ExamResult;
 import com.themockmaster.tmmpayment.mockmodels.Mock;
 import com.themockmaster.tmmpayment.mockmodels.Question;
+import com.themockmaster.tmmpayment.models.Candidate;
+import com.themockmaster.tmmpayment.models.CandidateToken;
+import com.themockmaster.tmmpayment.repository.CandidateRepository;
 import com.themockmaster.tmmpayment.repository.ExamResultRepository;
 import com.themockmaster.tmmpayment.repository.MockRepository;
 import com.themockmaster.tmmpayment.repository.OptionRepository;
 import com.themockmaster.tmmpayment.repository.QuestionRepository;
+import com.themockmaster.tmmpayment.repository.TokenRepository;
+import com.themockmaster.tmmpayment.utils.Controls;
 
 @Service
 public class MockServiceImpl implements MockService {
@@ -35,14 +40,24 @@ public class MockServiceImpl implements MockService {
 	@Autowired
 	ExamResultRepository resultRepo;
 	
+	@Autowired
+	TokenRepository tokenRepo;
+	
+	@Autowired
+	CandidateRepository candidaterepo;
+	
 	
 	private  String[] domains = {"CISA_DOM1", "CISA_DOM2", "CISA_DOM3", "CISA_DOM4", "CISA_DOM5"};
 	
 	
 	@Override
-	public List<Question> createCISAMockExam(){
+	public HashMap<String,Object> createCISAMockExam(String user_token){
 		
+		HashMap<String,Object> ret = new HashMap<String,Object>();
 		List<Question> questions = new ArrayList<Question>();
+		
+		
+		Mock mock = this.createTheMockExam(user_token);
 		
 		List<Question> dom1questions = questionRepo.pull_cisa_dom1_questions(domains[0],31);
 		List<Question> dom2questions = questionRepo.pull_cisa_dom1_questions(domains[1],25);
@@ -81,8 +96,40 @@ public class MockServiceImpl implements MockService {
 			  questions.add(question);
 	        };
 	        
+	        ret.put("questions", questions);
+	        ret.put("mock", mock);
 	        
-		return questions;
+		return ret;
+		
+	}
+	
+	
+	
+	
+	public Mock createTheMockExam(String user_token) {
+		
+		Mock themock = new Mock();
+		
+        CandidateToken candidtoken = new CandidateToken();
+        
+        candidtoken = tokenRepo.verifyCandidateByToken(user_token);
+        
+        Candidate cand = new Candidate();
+        
+        cand = candidaterepo.getCandidateByEmail(candidtoken.getEmail());
+        
+        
+        themock.setExam_id("CISA");
+        themock.setCandidate_id(cand.getEmail());
+        themock.setExam_token(this.generateTokenString(10));
+        themock.setStart_date_time(Controls.returnDateTime());
+        themock.setCompleted("No");
+        
+        mockRepo.save(themock);
+		
+		
+		
+		return themock;
 		
 	}
 
@@ -208,8 +255,7 @@ public class MockServiceImpl implements MockService {
 	
 	public String generateTokenString(int len) {
 		
-		String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk"
-		          +"lmnopqrstuvwxyz!@#$%&";
+		String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		
 				Random rnd = new Random();
 				StringBuilder sb = new StringBuilder(len);

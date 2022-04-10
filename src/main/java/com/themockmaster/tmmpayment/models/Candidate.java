@@ -29,13 +29,7 @@ public class Candidate  implements Serializable{
 				+ ", date_created=" + date_created + ", date_updated=" + date_updated + "]";
 	}
 
-	public Integer getCandidate_id() {
-		return candidate_id;
-	}
-
-	public void setCandidate_id(Integer candidate_id) {
-		this.candidate_id = candidate_id;
-	}
+	
 
 	public String getEmail() {
 		return email;
@@ -107,6 +101,14 @@ public class Candidate  implements Serializable{
 	private Integer candidate_id;
 	
 	
+	public Integer getCandidate_id() {
+		return candidate_id;
+	}
+
+	public void setCandidate_id(Integer candidate_id) {
+		this.candidate_id = candidate_id;
+	}
+
 	@Column(name = "email")
 	private String email;
 	
