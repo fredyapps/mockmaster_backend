@@ -27,7 +27,7 @@ public class UserController {
 	UserInterface userinter;
 
 	
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
 	public  ResponseEntity<?> register(@RequestBody Candidate candidate){
 		
@@ -58,7 +58,7 @@ public class UserController {
 	}
 	
 
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
 	@RequestMapping(value = "/login",method = RequestMethod.POST)
 	public  ResponseEntity<?> login(@RequestBody HashMap<String,String> credentials){
 		

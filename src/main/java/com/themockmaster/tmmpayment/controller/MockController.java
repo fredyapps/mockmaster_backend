@@ -45,7 +45,7 @@ public class MockController {
 	Controls control;
 	
 	/** Initiating a Mock exam by Generating a set of random question from the 5 differents cisa domains  **/
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
 	@RequestMapping(value = "/cisaQuestions",method = RequestMethod.GET)
 	public ResponseEntity<?> initiateFlatterwavePayRequest() {
 		
@@ -69,7 +69,7 @@ public class MockController {
 	
 	
 	/** Takes the candidate's answers as a parameter and generate the result based on the result formulas **/
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
 	@RequestMapping(value = "/cisaResults",method = RequestMethod.POST)
 	public ResponseEntity<?> generateCISAcandiateResults(@RequestBody List<Question> submittion,
 			@RequestHeader("exam_token") String exam_token,
