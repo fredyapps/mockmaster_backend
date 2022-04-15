@@ -2,17 +2,24 @@ package com.themockmaster.tmmpayment.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.themockmaster.tmmpayment.mockmodels.Domain;
+import com.themockmaster.tmmpayment.mockmodels.Question;
 import com.themockmaster.tmmpayment.models.Candidate;
 import com.themockmaster.tmmpayment.models.CandidateToken;
 import com.themockmaster.tmmpayment.repository.CandidateRepository;
+import com.themockmaster.tmmpayment.repository.DomainRepository;
 import com.themockmaster.tmmpayment.repository.TokenRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +31,11 @@ public class Controls {
 	
 	
 	private static final String EMPTY_STRING = "";
+	
+	
+	
+	@Autowired
+	static DomainRepository domainRepo;
 	
 	
 	
@@ -51,6 +63,30 @@ public class Controls {
 		}else {
 			  
 			return false;
+		}
+		
+		
+	}
+	
+	
+	
+	public  String returnUser(String candidate_token) {
+		
+		CandidateToken candidtoken = new CandidateToken();
+		
+		candidtoken = tokenRepo.verifyCandidateByToken(candidate_token);
+	    
+	    System.out.println("================== printing token  ===================");
+	    
+	    System.out.println(candidaterepo.getCandidateByToken(candidate_token));
+		
+		if(candidtoken!=null) {
+			
+			return candidtoken.getEmail();
+			
+		}else {
+			  
+			return null;
 		}
 		
 		
@@ -125,7 +161,9 @@ public class Controls {
 	   
 	   return created_at;
     }
-	
+    
+    
+
 	
 	
 

@@ -96,5 +96,48 @@ public class UserImpl implements UserInterface{
 	
 	
 	
+	
+	
+	public void logoutCandidate(String user_token) {
+		
+		CandidateToken candidtoken = new CandidateToken();
+		candidtoken = tokenRepo.verifyCandidateByToken(user_token);
+		
+		System.out.println(candidtoken);
+		
+		tokenRepo.delete(candidtoken);
+		
+	}
+	
+	
+	
+	public Candidate  getUserDetails(String user_token) {
+		
+		
+		CandidateToken candidtoken = new CandidateToken();
+		candidtoken = tokenRepo.verifyCandidateByToken(user_token);
+		
+		Candidate user = candidaterepo.getCandidateByEmail(candidtoken.getEmail());
+		
+		if(user!=null) {
+			
+			return user;
+			
+		}else {
+			
+			return null;
+			
+		}
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
 
 }

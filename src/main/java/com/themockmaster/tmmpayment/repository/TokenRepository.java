@@ -10,4 +10,8 @@ public interface TokenRepository extends JpaRepository<CandidateToken, Integer>{
 
 	@Query(value="SELECT * FROM candidate_tokens  WHERE token = ?1", nativeQuery = true)
 	CandidateToken verifyCandidateByToken(String token);
+	
+	
+	
+	
 }

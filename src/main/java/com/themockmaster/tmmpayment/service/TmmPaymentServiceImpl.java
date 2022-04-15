@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.themockmaster.tmmpayment.client.tmmpaymentClient;
+import com.themockmaster.tmmpayment.mockmodels.Offers;
+import com.themockmaster.tmmpayment.models.Candidate;
 import com.themockmaster.tmmpayment.models.Customer;
 import com.themockmaster.tmmpayment.models.Customizations;
 import com.themockmaster.tmmpayment.models.InitiatePayRequest;
@@ -17,6 +19,8 @@ import com.themockmaster.tmmpayment.models.InitiatePayResponse;
 import com.themockmaster.tmmpayment.models.Meta;
 import com.themockmaster.tmmpayment.models.Transaction;
 import com.themockmaster.tmmpayment.models.Webhook_main_payload;
+import com.themockmaster.tmmpayment.repository.CandidateRepository;
+import com.themockmaster.tmmpayment.repository.OfferRepository;
 import com.themockmaster.tmmpayment.repository.TransactionRepository;
 
 //import software.amazon.awssdk.services.sns.SnsClient;
@@ -45,9 +49,15 @@ public class TmmPaymentServiceImpl implements TmmPaymentService{
 	@Value("${tmmpayment.redirect_to_portal}")
 	private String redirect_to_portal;
 	
+	@Autowired
+	OfferRepository offerRepo;
+	
 	
 	@Autowired
 	TransactionRepository transRepo;
+	
+	@Autowired
+	CandidateRepository candidaterepo;
 	
 	
 	
@@ -110,24 +120,56 @@ public class TmmPaymentServiceImpl implements TmmPaymentService{
 	
 	@Override
 	public InitiatePayResponse iniateTransaction(Transaction paymentReq) {
-		
+		System.out.println("====== printing request at line 123");
+ 	    System.out.println(paymentReq);
 		InitiatePayRequest  req = new InitiatePayRequest();
 		InitiatePayResponse res = new InitiatePayResponse();
+		Transaction initiateObj = new Transaction();
+		Candidate cand = new Candidate();
+		
        
        try {
     	   
     	   String transRef = generateReference();
     	   
-    	   System.out.println("========== printing transaction reference from flutterwave in service ===========");
-	       System.out.println(transRef);
+    	   // assigning the transaction a reference number
+    	   initiateObj.setReference(transRef);
     	   
-	       // assigning the transaction a reference number
-    	   paymentReq.setReference(transRef);
+    	   //getting candidate info from the candidate DB instance
+    	   cand = candidaterepo.getCandidateByEmail(paymentReq.getEmail());
+    	   
+    	   System.out.println("====== printing candidate at line 142");
+    	   System.out.println(cand);
+    	   
+    	   initiateObj.setName(cand.getFullname());
+    	   initiateObj.setPhonenumber(cand.getPhone_number());
+    	   initiateObj.setEmail(paymentReq.getEmail());
+    	   
+    	   System.out.println("====== printing offer id");
+    	   System.out.println(paymentReq.getOffer());
+    	   
+    	   //getting package info from the package DB instance
+    	   Offers offer =  offerRepo.findPackageById(paymentReq.getOffer());
+    	   
+    	   System.out.println("====== printing selected package at line 149");
+    	   System.out.println(offer);
+    	   
+    	   initiateObj.setAmount(offer.getGhc_price().toString());
+    	   
+    	  
+    	   
+    	   
+    	   String description = "Purchasing "+ offer.getExam() + " "+offer.getName()+" package for "+offer.getGhc_price().toString();
+    	   
+    	   initiateObj.setDescription(description);
+    	   initiateObj.setCurrency("GHS");
+    	   initiateObj.setAttempts(offer.getAttempts());
+    	   
     	   
     	   //inserting transaction into themockmaster DB
-    	   transRepo.save(paymentReq);
+    	   transRepo.save(initiateObj);
     	   
-    	   req = formInitiateReq(paymentReq);
+    	    req = formInitiateReq(initiateObj);
     	  
     	   
     	    res = client.createInitiateFlutterPayment(req, InitiatePayResponse.class, initiate_uri);

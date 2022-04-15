@@ -12,4 +12,10 @@ public interface UserInterface {
 	
 	public Candidate authenticateCandidate(HashMap<String,String> userCredentials)  throws Exception;
 	
+	public void logoutCandidate(String token_user) throws Exception;
+	
+	public Candidate  getUserDetails(String token) throws Exception;
+	
+	
+	
 }

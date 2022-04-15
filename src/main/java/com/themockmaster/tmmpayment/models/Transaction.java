@@ -35,20 +35,50 @@ public class Transaction {
 	
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	@Override
 	public String toString() {
 		return "Transaction [id_table=" + id_table + ", transaction_id=" + transaction_id + ", reference=" + reference
 				+ ", amount=" + amount + ", currency=" + currency + ", email=" + email + ", phonenumber=" + phonenumber
 				+ ", name=" + name + ", description=" + description + ", operator_message=" + operator_message
-				+ ", completed=" + completed + ", created_at=" + created_at + ", updated_at=" + updated_at + "]";
+				+ ", offer=" + offer + ", attempts=" + attempts + ", completed=" + completed + ", created_at="
+				+ created_at + ", updated_at=" + updated_at + "]";
 	}
 
 
 
 
 	public Transaction(Long id_table, Long transaction_id, String reference, String amount, String currency,
-			String email, String phonenumber, String name, String description, String operator_message,
-			String completed, String created_at, String updated_at) {
+			String email, String phonenumber, String name, String description, String operator_message, Integer offer,
+			Integer attempts, String completed, String created_at, String updated_at) {
 		super();
 		this.id_table = id_table;
 		this.transaction_id = transaction_id;
@@ -60,9 +90,25 @@ public class Transaction {
 		this.name = name;
 		this.description = description;
 		this.operator_message = operator_message;
+		this.offer = offer;
+		this.attempts = attempts;
 		this.completed = completed;
 		this.created_at = created_at;
 		this.updated_at = updated_at;
+	}
+
+
+
+
+	public Integer getOffer() {
+		return offer;
+	}
+
+
+
+
+	public void setOffer(Integer offer) {
+		this.offer = offer;
 	}
 
 
@@ -221,6 +267,41 @@ public class Transaction {
 	@Column(name = "operator_message")
 	private String operator_message;
 	
+	
+	@JsonIgnore
+	@Column(name = "offer")
+	private Integer offer;
+	
+	
+	@Column(name = "attempts")
+	private Integer attempts;
+	
+
+
+
+
+
+	
+
+
+
+
+	public Integer getAttempts() {
+		return attempts;
+	}
+
+
+
+
+	public void setAttempts(Integer attempts) {
+		this.attempts = attempts;
+	}
+
+
+
+
+
+
 	@JsonIgnore
 	@Column(name = "completed")
 	private String completed="No";

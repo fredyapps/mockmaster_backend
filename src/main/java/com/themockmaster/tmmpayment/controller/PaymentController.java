@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,13 +40,18 @@ public class PaymentController {
 	
 	/** Initiate payment by sending user details to FlatterWave API and get
 	  the payment URL in return containing the token of the transaction. **/
+	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+	//@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/InitiatePayment",method = RequestMethod.POST)
-	public ResponseEntity<?> initiateFlatterwavePayRequest(@RequestBody Transaction trans) {
+	public ResponseEntity<?> initiateFlatterwavePayRequest(@RequestBody Transaction trans,
+			@RequestHeader("offer") Integer offer) {
 		
 		InitiatePayResponse res = new InitiatePayResponse();
 		
 		try {
 			
+			
+			trans.setOffer(offer);
 			res = tmmpaymentservice.iniateTransaction(trans);
 			
 		}catch(Exception ex){
@@ -63,6 +69,8 @@ public class PaymentController {
 	
 	/** WebHook function used by FlatterWave to send the payment details with 
 	 transaction status when after the user completes the transaction **/
+	//@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
 	@RequestMapping(value = "/checkTransactionStatus/{ref}",method = RequestMethod.GET)
 	public ResponseEntity<Object> receiveTransactionsDetails(@PathVariable Long ref) {
 		
@@ -85,6 +93,7 @@ public class PaymentController {
 	}
 	
 	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@RequestMapping(value = "/webhook",method = RequestMethod.POST)
 	public  ResponseEntity<?>  receivedDetailsOnWebhook(@RequestBody Webhook_main_payload trans,@RequestHeader("verif-hash") String verifheader) {
 		

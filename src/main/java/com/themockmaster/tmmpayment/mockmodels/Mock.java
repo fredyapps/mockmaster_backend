@@ -43,11 +43,22 @@ public class Mock {
 
 	
 
+
+
 	@Override
 	public String toString() {
-		return "Mock [mockId=" + mockId + ", exam_id=" + exam_id + ", candidate_id=" + candidate_id
-				+ ", start_date_time=" + start_date_time + ", end_date_time=" + end_date_time + ", exam_token="
-				+ exam_token + ", completed=" + completed + ", exam_score=" + exam_score + ", status=" + status + "]";
+		return "Mock [mockId=" + mockId + ", payment_ref=" + payment_ref + ", exam_id=" + exam_id + ", candidate_id="
+				+ candidate_id + ", start_date_time=" + start_date_time + ", end_date_time=" + end_date_time
+				+ ", exam_token=" + exam_token + ", completed=" + completed + ", exam_score=" + exam_score + ", status="
+				+ status + "]";
+	}
+
+	public String getPayment_ref() {
+		return payment_ref;
+	}
+
+	public void setPayment_ref(String payment_ref) {
+		this.payment_ref = payment_ref;
 	}
 
 	public void setExam_id(String exam_id) {
@@ -119,6 +130,9 @@ public class Mock {
 	@Column(name = "mock_id")
 	private Integer mockId;
 	
+	
+	@Column(name = "payment_ref")
+	private String payment_ref;
 	
 	@Column(name = "exam_id")
 	private String exam_id;

@@ -1,11 +1,17 @@
 package com.themockmaster.tmmpayment.mockmodels;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.Transient;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 @Entity
@@ -35,8 +41,19 @@ public class ExamResult {
 	
 	@Column(name = "passed")
 	private String passed;
+	
+	@Column(name = "domain")
+	private String domain;
 
 
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
 
 	@Override
 	public String toString() {

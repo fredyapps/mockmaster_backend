@@ -14,7 +14,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 	
 	
 	@Query(value="SELECT * FROM question  WHERE domain_id= :domainId ORDER BY RAND() limit :number_of_questions", nativeQuery = true)
-	List<Question> pull_cisa_dom1_questions(
+	List<Question> pull_cisa_questions(
 			  @Param("domainId") String domainId, 
 			  @Param("number_of_questions") Integer number_of_questions);
 	

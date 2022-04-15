@@ -108,6 +108,17 @@ public class Candidate  implements Serializable{
 	public void setCandidate_id(Integer candidate_id) {
 		this.candidate_id = candidate_id;
 	}
+	
+	@Column(name = "fullname")
+	private String fullname;
+
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
 
 	@Column(name = "email")
 	private String email;
