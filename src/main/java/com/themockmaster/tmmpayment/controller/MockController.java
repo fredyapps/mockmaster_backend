@@ -32,6 +32,8 @@ import com.themockmaster.tmmpayment.utils.Controls;
 @RestController
 @Validated
 @RequestMapping(value = "/examAPIs/v1")
+@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class MockController {
 	
 	
@@ -46,6 +48,7 @@ public class MockController {
 	@Autowired
 	MockService mockservice;
 	
+	
 	@Autowired
 	Controls control;
 	
@@ -53,8 +56,7 @@ public class MockController {
 	DomainRepository domainRepo;
 	
 	/** Initiating a Mock exam by Generating a set of random question from the 5 differents cisa domains  **/
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-	//@CrossOrigin(origins = "http://localhost:3000")
+	
 	@RequestMapping(value = "/cisaQuestions",method = RequestMethod.GET)
 	public ResponseEntity<?> initiateFlatterwavePayRequest(@RequestHeader("user_token") String user_token) {
 		
@@ -93,8 +95,6 @@ public class MockController {
 	
 	
 	/** Takes the candidate's answers as a parameter and generate the result based on the result formulas **/
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-	//@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/cisaResults",method = RequestMethod.POST)
 	public ResponseEntity<?> generateCISAcandiateResults(@RequestBody List<Question> submittion,
 			@RequestHeader("exam_token") String exam_token,
@@ -152,8 +152,8 @@ public class MockController {
 				
 	}
 	
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
-	//@CrossOrigin(origins = "http://localhost:3000")
+
+	
 	@RequestMapping(value = "/domains",method = RequestMethod.GET)
 	public ResponseEntity<?> getdomains() {
 	
@@ -174,9 +174,9 @@ public class MockController {
 	
 	
 	
+
 	
-	//@CrossOrigin(origins = "http://localhost:3000")
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+	
 	@RequestMapping(value = "/attempts",method = RequestMethod.GET)
 	public ResponseEntity<?> getAvailableAtt(@RequestHeader("user_token") String user_token) {
 	
@@ -212,8 +212,7 @@ public class MockController {
 	
 	
 	
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
-	//@CrossOrigin(origins = "http://localhost:3000")
+
 	@RequestMapping(value = "/packages",method = RequestMethod.GET)
 	public ResponseEntity<?> listPackages() {
 		
@@ -235,8 +234,7 @@ public class MockController {
 	
 	
 	
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-	//@CrossOrigin(origins = "http://localhost:3000")
+
 	@RequestMapping(value = "/my_mocks",method = RequestMethod.GET)
 	public ResponseEntity<?> list_candidate_mocks(@RequestHeader("user_token") String user_token) {
 		

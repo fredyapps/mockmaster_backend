@@ -122,6 +122,9 @@ public class PaymentController {
 		
 	}
 	
+	
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@RequestMapping(value = "/",method = RequestMethod.GET)
 	public String gatewayDisplay() {
 		

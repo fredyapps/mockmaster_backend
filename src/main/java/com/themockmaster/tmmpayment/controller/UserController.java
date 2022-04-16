@@ -21,6 +21,8 @@ import com.themockmaster.tmmpayment.utils.Controls;
 @RestController
 @Validated
 @RequestMapping(value = "/onboarding/v1")
+@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 	
 	
@@ -28,8 +30,7 @@ public class UserController {
 	UserInterface userinter;
 
 	
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
-	//@CrossOrigin(origins = "http://localhost:3000")
+	
 	@RequestMapping(value = "/register",method = RequestMethod.POST)
 	public  ResponseEntity<?> register(@RequestBody Candidate candidate){
 		
@@ -59,9 +60,10 @@ public class UserController {
 		
 	}
 	
+	
+	
 
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
-	//@CrossOrigin(origins = "http://localhost:3000")
+	
 	@RequestMapping(value = "/login",method = RequestMethod.POST)
 	public  ResponseEntity<?> login(@RequestBody HashMap<String,String> credentials){
 		
@@ -98,8 +100,9 @@ public class UserController {
 	
 	
 	
-	    @CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-		//@CrossOrigin(origins = "http://localhost:3000")
+	
+	
+	
 		@RequestMapping(value = "/logout",method = RequestMethod.POST)
 		public  void logoutCandidate(@RequestHeader("user_token") String user_token){
 			
@@ -114,8 +117,8 @@ public class UserController {
 		
 		
 		
-		@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-		//@CrossOrigin(origins = "http://localhost:3000")
+	
+		
 		@RequestMapping(value = "/user_details",method = RequestMethod.POST)
 		public  ResponseEntity<?> getCandidateDetails(@RequestHeader("user_token") String user_token){
 			
