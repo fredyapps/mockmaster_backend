@@ -76,8 +76,6 @@ public class UserImpl implements UserInterface{
 			return null;
 		}
 		
-		
-		
 	}
 	
 	
