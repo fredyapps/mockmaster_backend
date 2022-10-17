@@ -21,8 +21,8 @@ import com.themockmaster.tmmpayment.utils.Controls;
 @RestController
 @Validated
 @RequestMapping(value = "/onboarding/v1")
-@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-//@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:3000",allowedHeaders = "*")
 public class UserController {
 	
 	

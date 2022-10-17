@@ -12,6 +12,11 @@ import javax.persistence.Table;
 public class OffersItems {
 	
 	
+	@Override
+	public String toString() {
+		return "OffersItems [item_id=" + item_id + ", name=" + name + ", package_id=" + package_id + "]";
+	}
+
 	public OffersItems() {}
 	
 	@Id

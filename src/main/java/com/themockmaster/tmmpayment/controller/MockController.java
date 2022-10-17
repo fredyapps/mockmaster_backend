@@ -32,8 +32,8 @@ import com.themockmaster.tmmpayment.utils.Controls;
 @RestController
 @Validated
 @RequestMapping(value = "/examAPIs/v1")
-@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-//@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MockController {
 	
 	

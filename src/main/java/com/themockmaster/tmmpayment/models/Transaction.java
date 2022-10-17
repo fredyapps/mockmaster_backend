@@ -16,7 +16,7 @@ public class Transaction {
 	private Long id_table;
 	
 	@Column(name = "transaction_id")
-	private Long transaction_id;
+	private String transaction_id;
 
 	@Column(name = "reference")
 	private String reference;
@@ -76,7 +76,7 @@ public class Transaction {
 
 
 
-	public Transaction(Long id_table, Long transaction_id, String reference, String amount, String currency,
+	public Transaction(Long id_table, String transaction_id, String reference, String amount, String currency,
 			String email, String phonenumber, String name, String description, String operator_message, Integer offer,
 			Integer attempts, String completed, String created_at, String updated_at) {
 		super();
@@ -114,14 +114,14 @@ public class Transaction {
 
 
 
-	public Long getTransaction_id() {
+	public String getTransaction_id() {
 		return transaction_id;
 	}
 
 
 
 
-	public void setTransaction_id(Long transaction_id) {
+	public void setTransaction_id(String transaction_id) {
 		this.transaction_id = transaction_id;
 	}
 

@@ -9,7 +9,13 @@ import com.themockmaster.tmmpayment.models.Transaction;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
 	
-	Transaction findByReference(String reference);
+	
+	@Query(value="SELECT * FROM tmmpayment  WHERE  transaction_id=?1", nativeQuery = true)
+	Transaction findTransactionByReference(String reference);
+	
+	
+	@Query(value="SELECT * FROM tmmpayment  WHERE  reference=?1", nativeQuery = true)
+	Transaction findTransactionByInternalReference(String reference);
 	
 	
 	@Query(value="SELECT * FROM tmmpayment  WHERE (completed='Yes' AND attempts > 0 AND email=?1)", nativeQuery = true)
