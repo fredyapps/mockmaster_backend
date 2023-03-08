@@ -72,6 +72,8 @@ public class MockServiceImpl implements MockService {
 	
 	private  String[] domains = {"CISA_DOM1", "CISA_DOM2", "CISA_DOM3", "CISA_DOM4", "CISA_DOM5"};
 	
+	private  String[] cism_domains = {"CISM_DOM1","CISM_DOM2","CISM_DOM3","CISM_DOM4"};
+	
 	
 	@Override
 	public HashMap<String,Object> createCISAMockExam(String user_token){
@@ -80,7 +82,7 @@ public class MockServiceImpl implements MockService {
 		List<Question> questions = new ArrayList<Question>();
 		
 		
-		Mock mock = this.createTheMockExam(user_token);
+		Mock mock = this.createTheMockExam(user_token , "CISA");
 		
 		
 		if(mock!= null) {
@@ -130,43 +132,97 @@ public class MockServiceImpl implements MockService {
 			ret = null;
 		}
 
-	        
-	        
-	        
-	        
-	        
+	            
 		return ret;
 		
 	}
 	
 	
 	
+	public HashMap<String,Object> createCISMMockExam(String user_token){
+		
+		HashMap<String,Object> ret = new HashMap<String,Object>();
+		List<Question> questions = new ArrayList<Question>();
+		
+		Mock mock = this.createTheMockExam(user_token , "CISM");
+		
+		
+		if(mock!= null) {
+			
+			List<Question> dom1questions = questionRepo.pull_cisa_questions(cism_domains[0],25);
+			List<Question> dom2questions = questionRepo.pull_cisa_questions(cism_domains[1],30);
+			List<Question> dom3questions = questionRepo.pull_cisa_questions(cism_domains[2],50);
+			List<Question> dom4questions = questionRepo.pull_cisa_questions(cism_domains[3],45);
+		
+			
+			
+			  for (Question question : dom1questions)
+		        {
+				  question.setOptions(optionRepo.findOptionsByquestion(question.getQuestion_id()));
+				  questions.add(question);
+		        };
+			  
+			  for (Question question : dom2questions)
+		        {
+				  question.setOptions(optionRepo.findOptionsByquestion(question.getQuestion_id()));
+				  questions.add(question);
+		        };
+			  
+			  for (Question question : dom3questions)
+		        {
+				  question.setOptions(optionRepo.findOptionsByquestion(question.getQuestion_id()));
+				  questions.add(question);
+		        };
+			  
+			  for (Question question : dom4questions)
+		        {
+				  question.setOptions(optionRepo.findOptionsByquestion(question.getQuestion_id()));
+				  questions.add(question);
+		        };
+			  
+			
+		        
+		        ret.put("questions", questions);
+		        ret.put("mock", mock);
+		        
+		}else{
+			
+			ret = null;
+		}
+		
+		return ret;
+	}
 	
-	public Mock createTheMockExam(String user_token) {
+	
+	
+	
+	
+	public Mock createTheMockExam(String user_token, String exam_id) {
 		
 		Mock themock = new Mock();
-		Transaction trans = new Transaction();
+		//Transaction trans = new Transaction();
+		List<Transaction> trans = new ArrayList();
         CandidateToken candidtoken = new CandidateToken();
         
         candidtoken = tokenRepo.verifyCandidateByToken(user_token);
         
-        trans = transRepo.getRemainingAttempts(candidtoken.getEmail());
+        trans = transRepo.getRemainingAttemptsPerExam(candidtoken.getEmail(),exam_id);
         
-        if(trans!= null && trans.getAttempts() > 0) {
+        if(trans.get(0)!= null && trans.get(0).getAttempts() > 0) {
         	
-        	   trans.setAttempts(trans.getAttempts()- 1);
+        	   trans.get(0).setAttempts(trans.get(0).getAttempts()- 1);
         	
         	   Candidate cand = new Candidate();
                
                cand = candidaterepo.getCandidateByEmail(candidtoken.getEmail());
                
                
-               themock.setExam_id("CISA");
+               themock.setExam_id(exam_id);
                themock.setCandidate_id(cand.getEmail());
                themock.setExam_token(this.generateTokenString(10));
                themock.setStart_date_time(Controls.returnDateTime());
                themock.setCompleted("No");
-               themock.setPayment_ref(trans.getReference());
+               themock.setPayment_ref(trans.get(0).getReference());
                
                mockRepo.save(themock);
         	
@@ -187,8 +243,12 @@ public class MockServiceImpl implements MockService {
 		
 		Mock themock = new Mock();
 
-		HashMap<String,Double> firstScoreMap = new HashMap<String,Double>();
+		HashMap<String,Double> firstScoreMap  = new HashMap<String,Double>();
 		HashMap<String,Double> secondScoreMap = new HashMap<String,Double>();
+		HashMap<String,String> token_and_exam = new HashMap<String,String>();
+		
+		token_and_exam.put("exam_token", exam_token);
+		token_and_exam.put("exam_name", "CISA");
 		
 		Double CISA_DOM1 = 0.0; Double CISA_DOM2 = 0.0; Double CISA_DOM3 = 0.0; Double CISA_DOM4 = 0.0; Double CISA_DOM5 = 0.0;
 		Double overAllScore = 0.0;
@@ -250,12 +310,90 @@ public class MockServiceImpl implements MockService {
 		firstScoreMap.put(domains[4], CISA_DOM5);
 		
 		// generate the second phase of scores for each domain
-		secondScoreMap = generateSecondScore(firstScoreMap);
+		secondScoreMap = generateCISASecondScore(firstScoreMap);
 		
 		//calculate overAllScore for the CISA exam
-		overAllScore =  calculateCISAoverAllScore(secondScoreMap);
+		overAllScore =  calculateoverAllScore(secondScoreMap, "CISA");
 		
-		 themock = storeExamResults( firstScoreMap,  secondScoreMap , overAllScore, exam_token);
+		 themock = storeExamResults( firstScoreMap,  secondScoreMap , overAllScore, token_and_exam);
+		
+		return themock;
+		
+	}
+	
+	
+	
+	
+	
+public Mock generateCISMMockResult(List<Question> submittion,  String exam_token){
+		
+		Mock themock = new Mock();
+
+		HashMap<String,Double> firstScoreMap = new HashMap<String,Double>();
+		HashMap<String,Double> secondScoreMap = new HashMap<String,Double>();
+		HashMap<String,String> token_and_exam = new HashMap<String,String>();
+		
+		token_and_exam.put("exam_token", exam_token);
+		token_and_exam.put("exam_name", "CISM");
+		
+		Double CISM_DOM1 = 0.0; Double CISM_DOM2 = 0.0; Double CISM_DOM3 = 0.0; Double CISM_DOM4 = 0.0; Double CISM_DOM5 = 0.0;
+		Double overAllScore = 0.0;
+		for(Question candAnswers:submittion) {
+			
+			if(candAnswers.getDomain_id().equals(domains[0])) {
+				
+				if(candAnswers.getQuestion_answer().equals(candAnswers.getCandidateAnswer())) {
+					
+					CISM_DOM1 = CISM_DOM1 + 22.22;
+					
+				}
+			}
+			
+            if(candAnswers.getDomain_id().equals(domains[1])) {
+            	
+               if(candAnswers.getQuestion_answer().equals(candAnswers.getCandidateAnswer())) {
+					
+					CISM_DOM2 = CISM_DOM2 + 17.78;
+					
+				}
+			}
+            
+            if(candAnswers.getDomain_id().equals(domains[2])) {
+            	
+            	if(candAnswers.getQuestion_answer().equals(candAnswers.getCandidateAnswer())) {
+ 					
+ 					CISM_DOM3 = CISM_DOM3 + 19.51;
+ 					
+ 				}
+				
+			}
+            
+            if(candAnswers.getDomain_id().equals(domains[3])) {
+            	
+            	 if(candAnswers.getQuestion_answer().equals(candAnswers.getCandidateAnswer())) {
+ 					
+ 					CISM_DOM4 = CISM_DOM4 + 28.57;
+ 					
+ 				}
+				
+			}
+            
+         
+		}
+		
+		firstScoreMap.put(domains[0], CISM_DOM1);
+		firstScoreMap.put(domains[1], CISM_DOM2);
+		firstScoreMap.put(domains[2], CISM_DOM3);
+		firstScoreMap.put(domains[3], CISM_DOM4);
+
+		
+		// generate the second phase of scores for each domain
+		secondScoreMap = generateCISMSecondScore(firstScoreMap);
+		
+		//calculate overAllScore for the CISA exam
+		overAllScore =  calculateoverAllScore(secondScoreMap, "CISM");
+		
+		 themock = storeExamResults( firstScoreMap,  secondScoreMap , overAllScore, token_and_exam);
 		
 		return themock;
 		
@@ -264,7 +402,7 @@ public class MockServiceImpl implements MockService {
 	
 	
 	/** Takes a HashMap of domain scores to calculate the second phase of scores following the domain weight. **/
-	public HashMap<String,Double> generateSecondScore(HashMap<String,Double> firstScoreMap){
+	public HashMap<String,Double> generateCISASecondScore(HashMap<String,Double> firstScoreMap){
 		
 		HashMap<String,Double> secondScoreMap = new HashMap<String,Double>();
 		
@@ -288,12 +426,47 @@ public class MockServiceImpl implements MockService {
 	
 	
 	
-	public Double calculateCISAoverAllScore( HashMap<String,Double> secondScoreMap) {
+	/** Takes a HashMap of domain scores to calculate the second phase of scores following the domain weight. **/
+	public HashMap<String,Double> generateCISMSecondScore(HashMap<String,Double> firstScoreMap){
+		
+		HashMap<String,Double> secondScoreMap = new HashMap<String,Double>();
+		
+		Double CISM_DOM1 = 0.0; Double CISM_DOM2 = 0.0; Double CISM_DOM3 = 0.0; Double CISM_DOM4 = 0.0;
+		
+		CISM_DOM1 = (firstScoreMap.get(domains[0])*17)/100;
+		CISM_DOM2 = (firstScoreMap.get(domains[1])*20)/100;
+		CISM_DOM3 = (firstScoreMap.get(domains[2])*33)/100;
+		CISM_DOM4 = (firstScoreMap.get(domains[3])*30)/100;
+	
+		
+		secondScoreMap.put(domains[0], CISM_DOM1);
+		secondScoreMap.put(domains[1], CISM_DOM2);
+		secondScoreMap.put(domains[2], CISM_DOM3);
+		secondScoreMap.put(domains[3], CISM_DOM4);
+		
+		return secondScoreMap;
+		
+	}
+	
+	
+	
+	public Double calculateoverAllScore( HashMap<String,Double> secondScoreMap , String exam_id) {
 		
 		Double overAllScore = 0.0;
+		String examid = exam_id;
 		
-		overAllScore = secondScoreMap.get(domains[0])+ secondScoreMap.get(domains[1]) + secondScoreMap.get(domains[2])
-		               + secondScoreMap.get(domains[3]) + secondScoreMap.get(domains[4]);
+		if(examid.equals("CISA")) {
+			
+			overAllScore = secondScoreMap.get(domains[0])+ secondScoreMap.get(domains[1]) + secondScoreMap.get(domains[2])
+            + secondScoreMap.get(domains[3]) + secondScoreMap.get(domains[4]);
+			
+		}else if(examid.equals("CISM")) {
+			
+			overAllScore = secondScoreMap.get(domains[0])+ secondScoreMap.get(domains[1]) + secondScoreMap.get(domains[2])
+            + secondScoreMap.get(domains[3]);
+		}
+		
+		
 		
 		return overAllScore;
 		
@@ -335,13 +508,14 @@ public class MockServiceImpl implements MockService {
 
 	
 	
-	public Mock storeExamResults(HashMap<String,Double> firstScoreMap, HashMap<String,Double> secondScoreMap ,Double overAllScore,String exam_token) {
+	public Mock storeExamResults(HashMap<String,Double> firstScoreMap, HashMap<String,Double> secondScoreMap ,Double overAllScore,HashMap<String,String> token_and_exam) {
 		
 		Date date = new Date();
 		Boolean failed = false;
-		
+		String token = token_and_exam.get("exam_token");
+		List<Domain> db_domains = new ArrayList() ;
 	 
-		Mock mockObj = mockRepo.getByToken(exam_token);
+		Mock mockObj = mockRepo.getByToken(token);
 		
 		System.out.println("================== printing mock at line 232 ===================");
 		    
@@ -365,14 +539,22 @@ public class MockServiceImpl implements MockService {
 	    // Updating the mock exam in the DB
 	    Mock savedMock = mockRepo.save(mockObj);
 	    
+	    if(token_and_exam.get("exam_name").equals("CISA")){
 	    
-	    List<Domain> db_domains = domainRepo.findDomainsByExam("CISA");
+	    	  db_domains = domainRepo.findDomainsByExam("CISA");
+	    	 
+	    }else if(token_and_exam.get("exam_name").equals("CISM")){
+	    
+	          db_domains = domainRepo.findDomainsByExam("CISM");
+	    
+	    }
+	    
 	    
 	    // Storing the result per domain
-	    for (Domain me : db_domains) {
+	    for (Domain me : db_domains ) {
 	    	
 	    	ExamResult exam_result = new ExamResult();
-	    	exam_result.setExam_token(exam_token);
+	    	exam_result.setExam_token(token);
 	  	    exam_result.setExam_id(savedMock.getMockId());
 	  	    exam_result.setDomain_id(me.getDomain_id());
 	  	
@@ -387,7 +569,7 @@ public class MockServiceImpl implements MockService {
 	    }
 	    
 	    if(failed) {
-	    	 savedMock = mockRepo.getByToken(exam_token);
+	    	 savedMock = mockRepo.getByToken(token);
 	    	 savedMock.setStatus("Failed");
 	    	 mockRepo.save(savedMock);
 	    	
@@ -438,12 +620,13 @@ public class MockServiceImpl implements MockService {
 	
 	
 	@Override
-	public Transaction getAvailableAttempts(String user_token) {
+	public List<Transaction> getAvailableAttempts(String user_token) {
 		
-		Transaction trans = new Transaction();
+		List<Transaction> trans = new ArrayList();
         CandidateToken candidtoken = new CandidateToken();
         
         candidtoken = tokenRepo.verifyCandidateByToken(user_token);
+        //trans = transRepo.getRemainingAttempts(candidtoken.getEmail());
         
         if(candidtoken!=null) {
         	

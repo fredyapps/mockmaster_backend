@@ -48,7 +48,7 @@ public class Offers {
 
 
 
-	public Offers(Integer package_id, String name, String exam, String ghc_price, Integer attempts,
+	public Offers(Integer package_id, String name, String exam, Integer ghc_price, Integer attempts,
 		List<OffersItems> items) {
 	super();
 	this.package_id = package_id;
@@ -97,13 +97,13 @@ public class Offers {
 
 
 
-	public String getGhc_price() {
+	public Integer getGhc_price() {
 		return ghc_price;
 	}
 
 
 
-	public void setGhc_price(String ghc_price) {
+	public void setGhc_price(Integer ghc_price) {
 		this.ghc_price = ghc_price;
 	}
 
@@ -134,7 +134,7 @@ public class Offers {
 	private String exam;
 	
 	@Column(name = "ghc_price")
-	private String ghc_price;
+	private Integer ghc_price;
 	
 	@Column(name = "attempts")
 	private Integer attempts;

@@ -1,5 +1,7 @@
 package com.themockmaster.tmmpayment.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,7 +21,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 	
 	
 	@Query(value="SELECT * FROM tmmpayment  WHERE (completed='Yes' AND attempts > 0 AND email=?1)", nativeQuery = true)
-	Transaction getRemainingAttempts(String email);
+	List<Transaction> getRemainingAttempts(String email);
+	
+	
+	@Query(value="SELECT * FROM tmmpayment  WHERE (completed='Yes' AND attempts > 0 AND email=?1 AND description=?2)", nativeQuery = true)
+	List<Transaction> getRemainingAttemptsPerExam(String email,String examid);
+	
+	
+	@Query(value="SELECT * FROM tmmpayment  WHERE (completed='Yes' AND email=?1)", nativeQuery = true)
+	Transaction getUserPayments(String email);
 	
 	
 }

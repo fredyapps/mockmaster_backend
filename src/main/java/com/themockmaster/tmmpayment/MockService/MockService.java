@@ -13,7 +13,14 @@ public interface MockService {
 	public <T> T createCISAMockExam(String user_token) throws Exception;
 	
 	
+	//
+	public <T> T createCISMMockExam(String user_token) throws Exception;
+	
+	
 	public Mock generateCISAMockResult(List<Question> submittion,String exam_token) throws Exception;
+	
+	
+	public Mock generateCISMMockResult(List<Question> submittion,String exam_token) throws Exception;
 	
 	
 	public  List<Offers> listOfferPackages(String exam) throws Exception;
@@ -22,6 +29,6 @@ public interface MockService {
 	public List<Mock> listCandidateMocks(String user_token) throws Exception;
 	
 	
-	public Transaction getAvailableAttempts(String user_token) throws Exception;
+	public List<Transaction> getAvailableAttempts(String user_token) throws Exception;
  
 }

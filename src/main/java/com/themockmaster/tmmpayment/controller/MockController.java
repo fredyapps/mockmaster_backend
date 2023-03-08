@@ -32,8 +32,8 @@ import com.themockmaster.tmmpayment.utils.Controls;
 @RestController
 @Validated
 @RequestMapping(value = "/examAPIs/v1")
-//@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://portal.mymockmaster.com",allowedHeaders = "*")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class MockController {
 	
 	
@@ -58,13 +58,50 @@ public class MockController {
 	/** Initiating a Mock exam by Generating a set of random question from the 5 differents cisa domains  **/
 	
 	@RequestMapping(value = "/cisaQuestions",method = RequestMethod.GET)
-	public ResponseEntity<?> initiateFlatterwavePayRequest(@RequestHeader("user_token") String user_token) {
+	public ResponseEntity<?> fetchCISAquestions(@RequestHeader("user_token") String user_token) {
 		
 		 HashMap<String,Object> questions_and_mock = new HashMap();
 		
 		try {
 			
 			questions_and_mock = mockservice.createCISAMockExam(user_token);
+			
+				if(questions_and_mock!=null) {
+					
+					return new ResponseEntity<Object>(questions_and_mock, HttpStatus.OK);
+					
+				}else {
+	        		
+	        		ErrorModel err = new ErrorModel();
+	        		err.setMessage("Sorry, No mock attempt remaining, Kindly buy a package");
+	        		err.setStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+	        		
+	        		return new ResponseEntity<ErrorModel>(err, HttpStatus.UNPROCESSABLE_ENTITY);
+	        	}
+        	
+		     
+			
+		}catch(Exception ex){
+	
+    		
+    		return new ResponseEntity<Object>(ex, HttpStatus.UNPROCESSABLE_ENTITY);
+		}		
+		
+		
+		
+	}
+	
+	
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@RequestMapping(value = "/cismQuestions",method = RequestMethod.GET)
+	public ResponseEntity<?> fetchCISMquestions(@RequestHeader("user_token") String user_token) {
+		
+		 HashMap<String,Object> questions_and_mock = new HashMap();
+		
+		try {
+			
+			questions_and_mock = mockservice.createCISMMockExam(user_token);
 			
 				if(questions_and_mock!=null) {
 					
@@ -108,6 +145,50 @@ public class MockController {
         	if(control.checkingUser(user_token)){
         		
         		result = mockservice.generateCISAMockResult(submittion,exam_token);
+        		
+        		return new ResponseEntity<Mock>(result, HttpStatus.OK);
+        		
+        	}else {
+        		
+        		ErrorModel err = new ErrorModel();
+        		err.setMessage("User does not exist");
+        		err.setStatus(HttpStatus.NOT_FOUND);
+        		
+        		return new ResponseEntity<ErrorModel>(err, HttpStatus.NOT_FOUND);
+        	}
+        	
+        	
+		}catch(Exception ex){
+			
+			System.out.println(ex);
+			
+			return new ResponseEntity<Object>(ex, HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+		
+        
+	}
+	
+	
+	
+	
+	
+	/** Takes the candidate's answers as a parameter and generate the result based on the result formulas **/
+	@RequestMapping(value = "/cismResults",method = RequestMethod.POST)
+	public ResponseEntity<?> generateCISMcandiateResults(@RequestBody List<Question> submittion,
+			@RequestHeader("exam_token") String exam_token,
+			@RequestHeader("user_token") String user_token){
+		//@RequestBody List<Question> submittion
+		  
+		    Mock result = new Mock();
+		
+        try {
+        	
+        	if(control.checkingUser(user_token)){
+        		
+        		System.out.println("############## tracing the 422  error ##################");
+        		System.out.println(exam_token);
+        		
+        		result = mockservice.generateCISMMockResult(submittion,exam_token);
         		
         		return new ResponseEntity<Mock>(result, HttpStatus.OK);
         		
@@ -183,15 +264,22 @@ public class MockController {
 		
        try {
     	   
-		    	Transaction trans = new Transaction();
+    	        List<Transaction> trans = new ArrayList();
 		   	    trans = mockservice.getAvailableAttempts(user_token);
+		   	    
+		   	    System.out.println("=================printing attempts================");
+		   	    
+		   	    System.out.println(trans);
+		   	    
+		   	    System.out.println("=================================");  
+		   	    
 		    	   
 		   if(trans!=null) {
 		    	 
 					
-					return new ResponseEntity<Transaction>(trans, HttpStatus.OK);
+					return new ResponseEntity<List<Transaction>>(trans, HttpStatus.OK);
 					
-		       }else {
+		    }else {
 		   		
 			   		ErrorModel err = new ErrorModel();
 			   		err.setMessage("Sorry, No mock attempt remaining, Kindly buy a package");
@@ -214,13 +302,13 @@ public class MockController {
 	
 
 	@RequestMapping(value = "/packages",method = RequestMethod.GET)
-	public ResponseEntity<?> listPackages() {
+	public ResponseEntity<?> listPackages(@RequestHeader("exam_name") String exam_name) {
 		
 		List<Offers> packages = new ArrayList<Offers>();
 		
 		try {
 			
-			packages = mockservice.listOfferPackages("CISA");
+			packages = mockservice.listOfferPackages(exam_name);
 		
 			return new ResponseEntity<Object>(packages, HttpStatus.OK);
 		

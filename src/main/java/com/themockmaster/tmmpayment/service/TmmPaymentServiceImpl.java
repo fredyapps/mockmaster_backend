@@ -3,6 +3,8 @@ package com.themockmaster.tmmpayment.service;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.themockmaster.tmmpayment.client.tmmpaymentClient;
 import com.themockmaster.tmmpayment.mockmodels.Offers;
 import com.themockmaster.tmmpayment.models.Candidate;
+import com.themockmaster.tmmpayment.models.CandidateToken;
 import com.themockmaster.tmmpayment.models.Customer;
 import com.themockmaster.tmmpayment.models.Customizations;
 import com.themockmaster.tmmpayment.models.InitiatePayRequest;
@@ -163,6 +166,7 @@ public class TmmPaymentServiceImpl implements TmmPaymentService{
 	
 	@Override
 	public InitiatePayResponse iniateTransaction(Transaction paymentReq) {
+		
 		System.out.println("====== printing request at line 123");
  	    System.out.println(paymentReq);
 		InitiatePayRequest  req = new InitiatePayRequest();
@@ -269,18 +273,31 @@ public class TmmPaymentServiceImpl implements TmmPaymentService{
 	    	   
 	    	   initiatedPayment.setAmount(offer.getGhc_price().toString());
 	    	   
-	    	   String description = "Purchasing "+ offer.getExam() + " "+offer.getName()+" package for "+offer.getGhc_price().toString();
+	    	   String description = offer.getExam();
 	    	   
 	    	   initiatedPayment.setDescription(description);
 	    	   initiatedPayment.setCurrency("GHS");
 	    	   initiatedPayment.setAttempts(offer.getAttempts());
 	    	   
 	    	   
+	    	   /// before creating a transaction record in table
+	    	   List<Transaction> trans = new ArrayList();
+	         
+	           
+	           //cancelling existing payment by this user.
+	           trans = transRepo.getRemainingAttempts(paymentReq.getEmail());
+	           trans.get(0).setAttempts(0);
+	           transRepo.save(trans.get(0));
+	      
+	    	   ///
+	    	   
 	    	   //inserting transaction into themockmaster DB
-	    	   transRepo.save(initiatedPayment);
+	    	   //transRepo.save(initiatedPayment);
+	    	   
+	    	   
 	    	   
 	    	   //preparing the request to paystack
-	    	    req.setAmount(offer.getGhc_price());
+	    	    req.setAmount(String.valueOf(offer.getGhc_price()*100));
 	    	    req.setEmail(initiatedPayment.getEmail());
 	    	    
 	    	    System.out.println("========== printing initiate request to paystack ===========");

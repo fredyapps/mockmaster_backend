@@ -40,7 +40,7 @@ public class PaymentController {
 	
 	/** Initiate payment by sending user details to FlatterWave API and get
 	  the payment URL in return containing the token of the transaction. **/
-	//@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com",allowedHeaders = "*")
+	//@CrossOrigin(origins = "https://portal.mymockmaster.com",allowedHeaders = "*")
 	@CrossOrigin(origins = "http://localhost:3000")
 	@RequestMapping(value = "/InitiatePayment",method = RequestMethod.POST)
 	public ResponseEntity<?> initiateFlatterwavePayRequest(@RequestBody Transaction trans,
@@ -66,8 +66,8 @@ public class PaymentController {
 	
 	/** WebHook function used by FlatterWave to send the payment details with 
 	 transaction status when after the user completes the transaction **/
-	//@CrossOrigin(origins = "http://localhost:3000")
-	@CrossOrigin(origins = "https://tmmfrontend.herokuapp.com")
+	@CrossOrigin(origins = "http://localhost:3000")
+	//@CrossOrigin(origins = "https://portal.mymockmaster.com")
 	@RequestMapping(value = "/checkTransactionStatus/{ref}",method = RequestMethod.GET)
 	public ResponseEntity<Object> receiveTransactionsDetails(@PathVariable Long ref) {
 		
